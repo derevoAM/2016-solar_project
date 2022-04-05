@@ -84,7 +84,6 @@ def create_planet_image(space, planet):
     y = scale_y(planet.y)
     r = planet.R
     planet.image = space.create_oval([x - r, y - r], [x + r, y + r], fill=planet.color)
-    pass  # FIXME: сделать как у звезды
 
 
 def update_system_name(space, system_name):
