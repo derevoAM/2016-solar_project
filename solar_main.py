@@ -1,7 +1,7 @@
 # coding: utf-8
 # license: GPLv3
 
-#Test push
+# Test push
 
 import tkinter
 from tkinter.filedialog import *
@@ -34,12 +34,17 @@ def execution():
     Цикличность выполнения зависит от значения глобальной переменной perform_execution.
     При perform_execution == True функция запрашивает вызов самой себя по таймеру через от 1 мс до 100 мс.
     """
+
     global physical_time
     global displayed_time
+
     recalculate_space_objects_positions(space_objects, time_step.get())
+
     for body in space_objects:
         update_object_position(space, body)
+
     physical_time += time_step.get()
+
     displayed_time.set("%.1f" % physical_time + " seconds gone")
 
     if perform_execution:
@@ -129,7 +134,7 @@ def main():
     start_button.pack(side=tkinter.LEFT)
 
     time_step = tkinter.DoubleVar()
-    time_step.set(1)
+    time_step.set(10000)
     time_step_entry = tkinter.Entry(frame, textvariable=time_step)
     time_step_entry.pack(side=tkinter.LEFT)
 
@@ -147,8 +152,13 @@ def main():
     time_label = tkinter.Label(frame, textvariable=displayed_time, width=30)
     time_label.pack(side=tkinter.RIGHT)
 
+    open_file_dialog()
+
+    execution()
+
     root.mainloop()
     print('Modelling finished!')
+
 
 if __name__ == "__main__":
     main()
