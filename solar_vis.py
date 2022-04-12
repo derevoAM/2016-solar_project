@@ -23,10 +23,7 @@ scale_factor = None
 
 def calculate_scale_factor(max_distance):
     """Вычисляет значение глобальной переменной **scale_factor** по данной характерной длине"""
-    global scale_factor
     sc_fac = 0.4 * min(window_height, window_width) / max_distance
-    scale_factor = 0.4 * min(window_height, window_width) / max_distance
-    print('Scale factor:', sc_fac)
     return sc_fac
 
 
@@ -107,7 +104,6 @@ def update_object_position(space, body):
     **space** — холст для рисования.
     **body** — тело, которое нужно переместить.
     """
-    # print(body.x)
     x = scale_x(body.x)
     y = scale_y(body.y)
     r = body.R

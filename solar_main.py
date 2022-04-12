@@ -92,7 +92,7 @@ def open_file_dialog(ob):
     in_filename = file.askopenfilename(filetypes=(("Text file", ".txt"),))
     ob.space_objects = inp.read_space_objects_data_from_file(in_filename)
     max_distance = max([max(abs(obj.x), abs(obj.y)) for obj in ob.space_objects])
-    vis.calculate_scale_factor(max_distance)
+    vis.scale_factor = vis.calculate_scale_factor(max_distance)
 
     for obj in ob.space_objects:
         if obj.type == 'star':
