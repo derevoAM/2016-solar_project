@@ -6,6 +6,8 @@ import tkinter.filedialog as file
 import solar_vis as vis
 import solar_model as mod
 import solar_input as inp
+import matplotlib.pyplot as plt
+import numpy as np
 
 perform_execution = False
 """Флаг цикличности выполнения расчёта"""
@@ -38,6 +40,7 @@ class Globals:
         self.frame = tkinter.Frame(self.root)
         self.space = tkinter.Canvas(self.root, width=vis.window_width, height=vis.window_height, bg="black")
         self.start_button = tkinter.Button(self.frame, text="Start", command=lambda: start_execution(self), width=6)
+        self.flag = 0
 
 
 def execution(obj):
@@ -55,6 +58,7 @@ def execution(obj):
     obj.physical_time += obj.time_step.get()
 
     obj.displayed_time.set("%.1f" % obj.physical_time + " seconds gone")
+    obj = inp.write_statistics(obj)
     if obj.perform_execution:
         obj.space.after(101 - int(obj.time_speed.get()), lambda: execution(obj))
 
@@ -112,6 +116,61 @@ def save_file_dialog(obj):
     inp.write_space_objects_data_to_file(out_filename, obj.space_objects)
 
 
+def read_statistics_from_file():
+    """
+    Функция, считывающая данные из файла stats.txt
+    """
+    file_open = open('stats.txt', 'r')
+    time = np.array([])
+    x = np.array([])
+    y = np.array([])
+    vx = np.array([])
+    vy = np.array([])
+    lines = file_open.readlines()
+
+    for line in lines:
+        array = [i for i in line.split()]
+        time = np.append(time, float(array[0]))
+        x = np.append(x, float(array[3]))
+        y = np.append(y, float(array[4]))
+        vx = np.append(vx, float(array[5]))
+        vy = np.append(vy, float(array[6]))
+
+    file_open.close()
+
+    return time, x, y, vx, vy
+
+
+def plotting():
+    """
+    Функция, строящая графики по считанным данным
+    """
+    time, x, y, vx, vy = read_statistics_from_file()
+    plt.grid(True)
+    fig_1, ax_1 = plt.subplots()
+    ax_1.plot(time, np.sqrt(vx ** 2 + vy ** 2))
+    ax_1.set_title("График зависимости модуля скорости спутника от времени")
+    ax_1.set_xlabel("t, c")
+    ax_1.set_ylabel("V, м/c")
+    fig_1.savefig("V(t).png")
+
+    fig_2, ax_2 = plt.subplots()
+    ax_2.plot(time, np.sqrt(x ** 2 + y ** 2))
+    ax_2.set_title("График зависимости расстояния спутника до звезды от времени")
+    ax_2.set_xlabel("t, c")
+    ax_2.set_ylabel("L, м")
+    fig_2.savefig("L(t).png")
+
+    fig_3, ax_3 = plt.subplots()
+    ax_3.plot(np.sqrt(x ** 2 + y ** 2), np.sqrt(vx ** 2 + vy ** 2))
+    ax_3.set_title("График зависимости модуля скорости спутника \n от расстояния до звезды")
+    ax_3.set_xlabel("L, м")
+    ax_3.set_ylabel("V, м/c")
+    fig_3.savefig("V(L).png")
+
+    plt.show()
+
+
 def main():
     """Главная функция главного модуля.
     Создаёт объекты графического дизайна библиотеки tkinter: окно, холст, фрейм с кнопками, кнопки.
@@ -153,3 +212,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    plotting()

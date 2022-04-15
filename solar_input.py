@@ -95,10 +95,27 @@ def write_space_objects_data_to_file(output_filename, space_objects):
         for obj in space_objects:
             out_file.writelines(
                 ("{} {} {} {} {} {} {} {} \n".format(obj.type, obj.R, obj.color, obj.m, obj.x, obj.y, obj.Vx,
-                                                  obj.Vy)).title())
+                                                     obj.Vy)).title())
 
 
-# FIXME: хорошо бы ещё сделать функцию, сохранающую статистику в заданный файл...
+def write_statistics(obj):
+    """
+    Функция, записывающая в файл значения координаты и скорости спутника
+    :param obj: объект класса Globals
+    """
+    line = ""
+    body = obj.space_objects[1]
+    line += str(obj.displayed_time.get()) + " " + str(body.x) + " " + str(body.y) + " " + str(
+        body.Vx) + " " + str(body.Vy) + "\n"
+    if obj.flag == 0:
+        with open("stats.txt", 'w') as out_file:
+            out_file.write(line)
+        obj.flag = 1
+    else:
+        with open("stats.txt", 'a') as out_file:
+            out_file.write(line)
+    return obj
+
 
 if __name__ == "__main__":
     print("This module is not for direct call!")
